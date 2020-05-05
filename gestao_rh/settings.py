@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from dj_database_url import parse as db_url
+from decouple import config, Csv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,12 +22,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'dryv(*74_4y_&eb3tdrg)lwr7e-%hkj+k0y8b^vm)=nb1&rh1m'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=[], cast=Csv())
 
 
 # Application definition
@@ -37,6 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'apps.core',
+    'apps.departamentos',
+    'apps.documentos',
+    'apps.empresas',
+    'apps.funcionarios',
+    'apps.registros_hora_extra',
 ]
 
 MIDDLEWARE = [
@@ -73,13 +82,19 @@ WSGI_APPLICATION = 'gestao_rh.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+default_db_url = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
+
+DATABASES = {
+    'default': config('DATABASE_URL', default=default_db_url, cast=db_url)
+}
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
+"""
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -103,9 +118,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
@@ -118,3 +133,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, '/staticfiles/')
