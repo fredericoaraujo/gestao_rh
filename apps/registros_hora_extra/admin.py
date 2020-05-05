@@ -1,3 +1,4 @@
 from django.contrib import admin
+from apps.registros_hora_extra.models import RegistroHoraExtra
 
-# Register your models here.
+admin.site.register(RegistroHoraExtra)
